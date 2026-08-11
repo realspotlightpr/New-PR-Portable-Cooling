@@ -12,6 +12,10 @@ const CALL_LABEL = "qIANCIz86t4cEKyI5opE";
 // so that image index N in the HTML resolves to image index N on disk.
 const IMG_RE = /(<img\b[^>]*?\bsrc=")data:image\/([a-zA-Z0-9+.\-]+);base64,([^"]+)(")/g;
 
+// Same idea for images embedded in CSS via url(data:...). Indexed separately
+// under a "c" prefix so the two sequences can never collide.
+const CSS_RE = /url\(\s*['"]?data:image\/([a-zA-Z0-9+.\-]+);base64,([^)'"\s]+)['"]?\s*\)/g;
+
 export default async (request, context) => {
   const url = new URL(request.url);
 
@@ -74,10 +78,22 @@ function transform(html, pathname) {
     return tag;
   });
 
-  // Dead placeholder tag - fires a request to an invalid ID on every visit.
+  // Images embedded in CSS backgrounds.
+  let ci = -1;
+  out = out.replace(CSS_RE, (m, ext, data) => {
+    ci++;
+    const e = ext.toLowerCase() === "jpeg" ? "jpg" : ext.toLowerCase();
+    return "url(/_img/c" + ci + "." + e + "?p=" + p + ")";
+  });
+
+  // Dead placeholder tag. This <script> carries BOTH a src and inline content,
+  // so its closing tag is thousands of chars away and the inline code never
+  // runs today. Deleting the tag would suddenly activate that dead code, so
+  // neutralise the type instead: the browser then neither fetches the src nor
+  // executes the body. Same behaviour, minus the wasted request.
   out = out.replace(
-    /<script[^>]*googletagmanager\.com\/gtag\/js\?id=AW_CONVERSION_ID[^>]*><\/script>/g,
-    ""
+    /<script([^>]*)\ssrc="https?:\/\/www\.googletagmanager\.com\/gtag\/js\?id=AW_CONVERSION_ID"([^>]*)>/g,
+    '<script type="text/plain" data-disabled="dead-gtag-placeholder">'
   );
 
   return out.includes("</body>")
@@ -86,10 +102,11 @@ function transform(html, pathname) {
 }
 
 async function serveImage(url) {
-  const m = url.pathname.match(/^\/_img\/(\d+)\.([a-z0-9]+)$/i);
+  const m = url.pathname.match(/^\/_img\/(c?)(\d+)\.([a-z0-9]+)$/i);
   if (!m) return new Response("bad request", { status: 404 });
 
-  const idx = parseInt(m[1], 10);
+  const isCss = m[1] === "c";
+  const idx = parseInt(m[2], 10);
   const page = url.searchParams.get("p") || "/";
 
   const src = new URL(page, url.origin);
@@ -101,14 +118,26 @@ async function serveImage(url) {
   let n = -1;
   let payload = null;
   let mime = null;
-  html.replace(IMG_RE, (mm, pre, ext, data) => {
-    n++;
-    if (n === idx) {
-      payload = data;
-      mime = ext.toLowerCase();
-    }
-    return mm;
-  });
+
+  if (isCss) {
+    html.replace(CSS_RE, (mm, ext, data) => {
+      n++;
+      if (n === idx) {
+        payload = data;
+        mime = ext.toLowerCase();
+      }
+      return mm;
+    });
+  } else {
+    html.replace(IMG_RE, (mm, pre, ext, data) => {
+      n++;
+      if (n === idx) {
+        payload = data;
+        mime = ext.toLowerCase();
+      }
+      return mm;
+    });
+  }
 
   if (!payload) return new Response("not found", { status: 404 });
 
@@ -221,4 +250,4 @@ gtag("js",new Date());gtag("config","${AW_ID}");
 export const config = { path: "/*" };
 
 // Exported for offline verification; unused at runtime.
-export { transform, IMG_RE };
+export { transform, IMG_RE, CSS_RE };
