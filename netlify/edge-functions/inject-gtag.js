@@ -207,6 +207,26 @@ gtag("js",new Date());gtag("config","${AW_ID}");
   function init(){
     document.querySelectorAll('a[href^="tel:"]').forEach(function(l){l.addEventListener("click",conv);});
 
+    var header=document.querySelector("header");
+    var nav=header&&header.querySelector("nav");
+    if(header&&nav&&!header.querySelector(".mobile-menu-toggle")){
+      var menu=document.createElement("button");
+      menu.className="mobile-menu-toggle";
+      menu.type="button";
+      menu.textContent="Menu";
+      menu.setAttribute("aria-expanded","false");
+      menu.setAttribute("aria-label","Abrir menu de navegacion");
+      menu.addEventListener("click",function(e){
+        e.stopPropagation();
+        var open=nav.classList.toggle("mobile-open");
+        menu.setAttribute("aria-expanded",open?"true":"false");
+        menu.textContent=open?"Cerrar":"Menu";
+      });
+      nav.querySelectorAll("a").forEach(function(link){link.addEventListener("click",function(){nav.classList.remove("mobile-open");menu.setAttribute("aria-expanded","false");menu.textContent="Menu";});});
+      header.insertBefore(menu,header.querySelector(".header-actions"));
+      document.addEventListener("click",function(e){if(!header.contains(e.target)){nav.classList.remove("mobile-open");menu.setAttribute("aria-expanded","false");menu.textContent="Menu";}});
+    }
+
     var bar=document.querySelector(".sticky-bar");
     if(bar && !bar.querySelector(".bb-row")){
       var row=document.createElement("div");
