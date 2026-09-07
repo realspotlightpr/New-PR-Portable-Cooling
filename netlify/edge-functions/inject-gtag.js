@@ -161,8 +161,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 gtag("js",new Date());gtag("config","${AW_ID}");
 </script>
 <style>
-@media (min-width:881px){.sticky-bar{display:block!important;}}
-.bb-row{display:flex;gap:8px;max-width:680px;margin:0 auto;padding:0 8px;align-items:stretch;}
+.bb-row{display:flex;gap:8px;max-width:420px;margin:0 auto;padding:0;align-items:stretch;}
 .bb-row>*{flex:1;min-width:0;}
 .bb-wa,.bb-q{display:flex;align-items:center;justify-content:center;border-radius:10px;padding:15px 8px;font-size:1.02rem;font-weight:700;text-decoration:none;border:0;cursor:pointer;font-family:inherit;line-height:1.1;}
 .bb-wa{background:#25D366;color:#fff;}
@@ -217,10 +216,7 @@ gtag("js",new Date());gtag("config","${AW_ID}");
       w.className="bb-wa";w.target="_blank";w.rel="noopener";w.textContent="WhatsApp";
       w.href=wa("Hola, quiero informacion sobre el alquiler del Portacool Jetstream 260 para mi evento.");
       w.addEventListener("click",conv);
-      var q=document.createElement("button");
-      q.className="bb-q";q.type="button";q.textContent="Cotizar";
-      q.addEventListener("click",function(){document.getElementById("bbModal").classList.add("on");});
-      row.appendChild(w);row.appendChild(q);
+      row.appendChild(w);
       bar.appendChild(row);
     }
 
