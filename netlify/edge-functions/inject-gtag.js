@@ -213,7 +213,7 @@ gtag("js",new Date());gtag("config","${AW_ID}");
       row.className="bb-row";
       while(bar.firstChild){row.appendChild(bar.firstChild);}
       var w=document.createElement("a");
-      w.className="bb-wa";w.target="_blank";w.rel="noopener";w.textContent="WhatsApp";
+      w.className="bb-wa";w.target="_blank";w.rel="noopener";w.textContent="WhatsApp · Reservar";
       w.href=wa("Hola, quiero informacion sobre el alquiler del Portacool Jetstream 260 para mi evento.");
       w.addEventListener("click",conv);
       row.appendChild(w);
