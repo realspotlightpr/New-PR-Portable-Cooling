@@ -241,6 +241,9 @@ gtag("js",new Date());gtag("config","${AW_ID}");
     }
 
     var mod=document.getElementById("bbModal");
+    document.querySelectorAll("[data-open-quote]").forEach(function(button){
+      button.addEventListener("click",function(){if(mod)mod.classList.add("on");});
+    });
     var x=document.getElementById("bbX");
     var s=document.getElementById("bbSend");
     if(x)x.addEventListener("click",function(){mod.classList.remove("on");});
