@@ -175,22 +175,8 @@ gtag("js",new Date());gtag("config","${AW_ID}");
 .bb-card input,.bb-card select{width:100%;padding:11px;border:1px solid #cfd8dd;border-radius:8px;font-size:1rem;box-sizing:border-box;font-family:inherit;}
 .bb-send{width:100%;margin-top:18px;background:#25D366;color:#fff;border:0;border-radius:10px;padding:14px;font-size:1.05rem;font-weight:700;cursor:pointer;font-family:inherit;}
 .bb-close{background:none;border:0;font-size:.85rem;color:#5a6b75;width:100%;margin-top:10px;cursor:pointer;font-family:inherit;}
-.camila-launch{position:fixed;right:18px;bottom:106px;z-index:9997;border:0;border-radius:999px;background:#0f6b63;color:#fff;box-shadow:0 10px 24px rgba(4,31,38,.24);padding:12px 16px;display:flex;align-items:center;gap:9px;font:700 .95rem/1.1 inherit;cursor:pointer}
-.camila-launch span:first-child{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#d9f5e8;color:#0f6b63;font-size:1.05rem}
-.camila-panel{position:fixed;right:18px;bottom:166px;z-index:9998;width:min(350px,calc(100vw - 28px));background:#fff;border:1px solid #d7e4e5;border-radius:16px;box-shadow:0 18px 46px rgba(4,31,38,.22);overflow:hidden;display:none;font-family:inherit}
-.camila-panel.on{display:block}
-.camila-head{display:flex;align-items:center;gap:10px;padding:14px 16px;background:linear-gradient(135deg,#0f6b63,#174957);color:#fff}
-.camila-avatar{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:#d9f5e8;color:#0f6b63;font-weight:800}
-.camila-head strong{display:block;font-size:1rem}.camila-head small{display:block;opacity:.82;margin-top:2px}
-.camila-close{margin-left:auto;border:0;background:transparent;color:#fff;font-size:1.25rem;cursor:pointer}
-.camila-body{padding:15px 16px;color:#16343d}.camila-body p{margin:0 0 13px;font-size:.94rem;line-height:1.45}.camila-actions{display:grid;gap:9px}.camila-actions a{display:flex;justify-content:center;align-items:center;min-height:42px;border-radius:9px;text-decoration:none;font-weight:800}.camila-wa{background:#25d366;color:#fff}.camila-call{background:#edf4f4;color:#0f6b63}
-@media (max-width:600px){.camila-launch{right:12px;bottom:88px;padding:11px 13px;font-size:.88rem}.camila-panel{right:12px;bottom:145px}}
 </style>
-<button class="camila-launch" id="camilaLaunch" type="button" aria-expanded="false" aria-controls="camilaPanel"><span aria-hidden="true">✦</span><span>Habla con Camila</span></button>
-<section class="camila-panel" id="camilaPanel" aria-label="Habla con Camila" role="dialog" aria-modal="false">
-  <div class="camila-head"><div class="camila-avatar">C</div><div><strong>Camila</strong><small>Asistente de Puerto Rico Portable Cooling</small></div><button class="camila-close" id="camilaClose" type="button" aria-label="Cerrar">×</button></div>
-  <div class="camila-body"><p>Te ayudo a verificar disponibilidad y comenzar una cotización para alquilar nuestros enfriadores en tu evento.</p><div class="camila-actions"><a class="camila-wa" href="https://wa.me/${PHONE}?text=${encodeURIComponent("Hola Camila, quiero cotizar el alquiler de enfriadores para mi evento.")}" target="_blank" rel="noopener">Escribir por WhatsApp</a><a class="camila-call" href="tel:+${PHONE}">Llamar ahora</a></div></div>
-</section>
+<script src="https://widgets.leadconnectorhq.com/loader.js" data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js" data-widget-id="6aa30090aabe9abc840a0ca1"></script>
 <div class="bb-modal" id="bbModal">
   <div class="bb-card">
     <h3>Cotiza tu evento</h3>
@@ -220,11 +206,14 @@ gtag("js",new Date());gtag("config","${AW_ID}");
   function val(id){var e=document.getElementById(id);return e&&e.value?e.value.trim():"";}
 
   function init(){
-    var camila=document.getElementById("camilaPanel");
-    var camilaLaunch=document.getElementById("camilaLaunch");
-    var camilaClose=document.getElementById("camilaClose");
-    if(camila&&camilaLaunch){camilaLaunch.addEventListener("click",function(){var open=camila.classList.toggle("on");camilaLaunch.setAttribute("aria-expanded",open?"true":"false");});}
-    if(camilaClose&&camila){camilaClose.addEventListener("click",function(){camila.classList.remove("on");camilaLaunch.setAttribute("aria-expanded","false");});}
+    var footer=document.querySelector("footer");
+    if(footer&&!footer.querySelector(".pr-contact-numbers")){
+      var contact=document.createElement("p");
+      contact.className="pr-contact-numbers";
+      contact.innerHTML='<a href="tel:+17878780878">Ventas y reservas: 787-878-0878</a> · <a href="tel:+18336576777">Soporte: 833-657-6777</a>';
+      contact.style.cssText="margin:8px 0;";
+      footer.insertBefore(contact,footer.firstChild?footer.children[1]||footer.firstChild:null);
+    }
     document.querySelectorAll('a[href^="tel:"]').forEach(function(l){l.addEventListener("click",conv);});
 
     var header=document.querySelector("header");
